@@ -3,6 +3,7 @@ package com.rarchives.ripme.ui;
 import java.awt.Dimension;
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -274,7 +275,7 @@ public class UpdateUtils {
             
             final String[] batchExec = new String[] { batchPath };
             // Create updater script
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(batchFile))) {
+            try (BufferedWriter bw = Files.newBufferedWriter(batchFile.toPath())) {
                 bw.write(script);
                 bw.flush();
             }
