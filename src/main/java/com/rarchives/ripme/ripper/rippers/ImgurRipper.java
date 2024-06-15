@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -79,7 +81,7 @@ public class ImgurRipper extends AlbumRipper {
         u = u.replace("imgur.com/gallery/", "imgur.com/a/");
         u = u.replace("https?://m\\.imgur\\.com", "http://imgur.com");
         u = u.replace("https?://i\\.imgur\\.com", "http://imgur.com");
-        return new URL(u);
+        return Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     public String getAlbumTitle(URL url) throws MalformedURLException {
@@ -257,7 +259,7 @@ public class ImgurRipper extends AlbumRipper {
                         continue;
                     }
                     String original = links.getString("original");
-                    ImgurImage theImage = new ImgurImage(new URL(original));
+                    ImgurImage theImage = new ImgurImage(Urls.create(original, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                     album.addImage(theImage);
                 } catch (Exception e) {
                     LOGGER.error("Got exception while fetching imgur ID " + imageId, e);
@@ -315,7 +317,7 @@ public class ImgurRipper extends AlbumRipper {
             if (image.endsWith(".gif") && Utils.getConfigBoolean("prefer.mp4", false)) {
                 image = image.replace(".gif", ".mp4");
             }
-            ImgurImage imgurImage = new ImgurImage(new URL(image));
+            ImgurImage imgurImage = new ImgurImage(Urls.create(image, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             imgurAlbum.addImage(imgurImage);
         }
         return imgurAlbum;
@@ -331,7 +333,7 @@ public class ImgurRipper extends AlbumRipper {
         int imagesLength = jsonImages.length();
         for (int i = 0; i < imagesLength; i++) {
             JSONObject ob = jsonImages.getJSONObject(i);
-            imgurAlbum.addImage(new ImgurImage( new URL(ob.getString("link"))));
+            imgurAlbum.addImage(new ImgurImage( Urls.create(ob.getString("link"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)));
         }
         return imgurAlbum;
     }
@@ -345,10 +347,9 @@ public class ImgurRipper extends AlbumRipper {
         if (ext.equals(".gif") && Utils.getConfigBoolean("prefer.mp4", false)) {
             ext = ".mp4";
         }
-        return  new URL(
-                "http://i.imgur.com/"
+        return  Urls.create("http://i.imgur.com/"
                         + json.getString("hash")
-                        + ext);
+                        + ext, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     private static Document getDocument(String strUrl) throws IOException {
@@ -387,7 +388,7 @@ public class ImgurRipper extends AlbumRipper {
                 continue;
             }
             String albumID = album.attr("href").substring(album.attr("href").lastIndexOf('/') + 1);
-            URL albumURL = new URL("http:" + album.attr("href") + "/noscript");
+            URL albumURL = Urls.create("http:" + album.attr("href") + "/noscript", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             try {
                 ripAlbum(albumURL, albumID);
                 Thread.sleep(SLEEP_BETWEEN_ALBUMS * 1000);
@@ -422,7 +423,7 @@ public class ImgurRipper extends AlbumRipper {
                     if (Utils.getConfigBoolean("download.save_order", true)) {
                         prefix = String.format("%03d_", imagesFound);
                     }
-                    addURLToDownload(new URL(imageUrl), prefix);
+                    addURLToDownload(Urls.create(imageUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), prefix);
                 }
                 if (imagesFound >= imagesTotal) {
                     break;
@@ -455,7 +456,7 @@ public class ImgurRipper extends AlbumRipper {
                 if (image.contains("b.")) {
                     image = image.replace("b.", ".");
                 }
-                URL imageURL = new URL(image);
+                URL imageURL = Urls.create(image, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 addURLToDownload(imageURL);
             }
             if (imgs.isEmpty()) {
@@ -487,7 +488,7 @@ public class ImgurRipper extends AlbumRipper {
             // Imgur album or gallery
             albumType = ALBUM_TYPE.ALBUM;
             String gid = m.group(m.groupCount());
-            this.url = new URL("http://imgur.com/a/" + gid);
+            this.url = Urls.create("http://imgur.com/a/" + gid, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             return gid;
         }
         p = Pattern.compile("^https?://(www\\.|m\\.)?imgur\\.com/(a|gallery|t)/[a-zA-Z0-9]*/([a-zA-Z0-9]{5,}).*$");
@@ -496,7 +497,7 @@ public class ImgurRipper extends AlbumRipper {
             // Imgur album or gallery
             albumType = ALBUM_TYPE.ALBUM;
             String gid = m.group(m.groupCount());
-            this.url = new URL("http://imgur.com/a/" + gid);
+            this.url = Urls.create("http://imgur.com/a/" + gid, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             return gid;
         }
         p = Pattern.compile("^https?://([a-zA-Z0-9\\-]{3,})\\.imgur\\.com/?$");
@@ -544,7 +545,7 @@ public class ImgurRipper extends AlbumRipper {
             albumType = ALBUM_TYPE.ALBUM;
             String subreddit = m.group(m.groupCount() - 1);
             String gid = m.group(m.groupCount());
-            this.url = new URL("http://imgur.com/r/" + subreddit + "/" + gid);
+            this.url = Urls.create("http://imgur.com/r/" + subreddit + "/" + gid, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             return "r_" + subreddit + "_" + gid;
         }
         p = Pattern.compile("^https?://(i\\.|www\\.|m\\.)?imgur\\.com/([a-zA-Z0-9]{5,})$");

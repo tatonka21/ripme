@@ -7,6 +7,8 @@ import com.rarchives.ripme.utils.RipUtils;
 import com.rarchives.ripme.utils.Utils;
 import com.rarchives.ripme.ui.RipStatusMessage;
 import com.rarchives.ripme.ui.RipStatusMessage.STATUS;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -186,7 +188,7 @@ public class E621Ripper extends AbstractHTMLRipper {
 
         Matcher m = gidPattern2.matcher(url.toExternalForm());
         if (m.matches())
-            return new URL("https://e621.net/post/index/1/" + m.group(2).replace("+", "%20"));
+            return Urls.create("https://e621.net/post/index/1/" + m.group(2).replace("+", "%20"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
 
         return url;
     }
@@ -206,7 +208,7 @@ public class E621Ripper extends AbstractHTMLRipper {
             try {
                 String fullSizedImage = getFullSizedImage(url);
                 if (fullSizedImage != null && !fullSizedImage.equals("")) {
-                    addURLToDownload(new URL(fullSizedImage), index);
+                    addURLToDownload(Urls.create(fullSizedImage, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), index);
                 }
             } catch (IOException e) {
                 logger.error("Unable to get full sized image from " + url);

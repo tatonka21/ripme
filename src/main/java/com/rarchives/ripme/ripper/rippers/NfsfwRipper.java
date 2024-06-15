@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -119,7 +121,7 @@ public class NfsfwRipper extends AbstractHTMLRipper {
         String u = url.toExternalForm();
         if (u.contains("?")) {
             u = u.substring(0, u.indexOf("?"));
-            return new URL(u);
+            return Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         } else {
             return url;
         }
@@ -223,7 +225,7 @@ public class NfsfwRipper extends AbstractHTMLRipper {
                 if (file.startsWith("/")) {
                     file = "http://nfsfw.com" + file;
                 }
-                addURLToDownload(new URL(file), getPrefix(index), this.subdir);
+                addURLToDownload(Urls.create(file, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), getPrefix(index), this.subdir);
             } catch (IOException e) {
                 LOGGER.error("[!] Exception while loading/parsing " + this.url, e);
             }

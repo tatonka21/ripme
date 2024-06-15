@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -143,7 +145,7 @@ public class VkRipper extends AbstractJSONRipper {
             JSONObject json = getFirstPage();
             List<String> URLs = getURLsFromJSON(json);
             for (int index = 0; index < URLs.size(); index ++) {
-                downloadURL(new URL(URLs.get(index)), index);
+                downloadURL(Urls.create(URLs.get(index), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), index);
             }
             waitForThreads();
         }

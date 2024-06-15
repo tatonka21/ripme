@@ -4,6 +4,8 @@ import com.rarchives.ripme.ripper.AbstractHTMLRipper;
 import com.rarchives.ripme.ripper.DownloadThreadPool;
 import com.rarchives.ripme.utils.Http;
 import com.rarchives.ripme.utils.Utils;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -165,7 +167,7 @@ public class ImagebamRipper extends AbstractHTMLRipper {
                     prefix = String.format("%03d_", index);
                 }
                 
-                addURLToDownload(new URL(imgsrc), prefix);
+                addURLToDownload(Urls.create(imgsrc, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), prefix);
             } catch (IOException e) {
                 LOGGER.error("[!] Exception while loading/parsing " + this.url, e);
             }

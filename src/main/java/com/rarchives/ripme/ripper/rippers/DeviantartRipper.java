@@ -5,6 +5,8 @@ import com.rarchives.ripme.ripper.DownloadThreadPool;
 import com.rarchives.ripme.ui.RipStatusMessage.STATUS;
 import com.rarchives.ripme.utils.Http;
 import com.rarchives.ripme.utils.Utils;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -383,9 +385,9 @@ public class DeviantartRipper extends AbstractHTMLRipper {
 		try {
 			String url = cleanURL();
 			if (this.usingCatPath) {
-				return (new URL(url + "?catpath=/&offset=" + offset));
+				return (Urls.create(url + "?catpath=/&offset=" + offset, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 			} else {
-				return (new URL(url + "?offset=" + offset));
+				return (Urls.create(url + "?offset=" + offset, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -630,7 +632,7 @@ public class DeviantartRipper extends AbstractHTMLRipper {
 				}
 				String[] tmpParts = downloadString.split("\\."); //split to get file ending
 				
-				addURLToDownload(new URL(downloadString), "", "", "", new HashMap<String, String>(),
+				addURLToDownload(Urls.create(downloadString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), "", "", "", new HashMap<String, String>(),
 						title + "." + tmpParts[tmpParts.length - 1]);
 				return;
 

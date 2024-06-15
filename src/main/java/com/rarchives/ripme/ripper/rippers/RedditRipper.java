@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -51,7 +53,7 @@ public class RedditRipper extends AlbumRipper {
         String u = url.toExternalForm();
         // Strip '/u/' from URL
         u = u.replaceAll("reddit\\.com/u/", "reddit.com/user/");
-        return new URL(u);
+        return Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     private URL getJsonURL(URL url) throws MalformedURLException {
@@ -59,7 +61,7 @@ public class RedditRipper extends AlbumRipper {
         Pattern p = Pattern.compile("^https?://[a-zA-Z0-9.]{0,4}reddit\\.com/gallery/([a-zA-Z0-9]+).*$");
         Matcher m = p.matcher(url.toExternalForm());
         if (m.matches()) {
-            return new URL("https://reddit.com/" +m.group(m.groupCount())+ ".json");
+            return Urls.create("https://reddit.com/" +m.group(m.groupCount())+ ".json", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         }
 
         // Append ".json" to URL in appropriate location.
@@ -67,7 +69,7 @@ public class RedditRipper extends AlbumRipper {
         if (url.getQuery() != null) {
             result += "?" + url.getQuery();
         }
-        return new URL(result);
+        return Urls.create(result, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     @Override
@@ -113,7 +115,7 @@ public class RedditRipper extends AlbumRipper {
                 else {
                     nextURLString = nextURLString.concat("?after=" + data.getString("after"));
                 }
-                nextURL = new URL(nextURLString);
+                nextURL = Urls.create(nextURLString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             }
         }
 
@@ -242,7 +244,7 @@ public class RedditRipper extends AlbumRipper {
                     baseURL = doc.select("MPD > Period > AdaptationSet > Representation[height=" + height + "]").select("BaseURL").text();
                 }
             }
-            return new URL(vidURL + "/" + baseURL);
+            return Urls.create(vidURL + "/" + baseURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -253,7 +255,7 @@ public class RedditRipper extends AlbumRipper {
     private void handleURL(String theUrl, String id, String title) {
         URL originalURL;
         try {
-            originalURL = new URL(theUrl);
+            originalURL = Urls.create(theUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         } catch (MalformedURLException e) {
             return;
         }
@@ -320,9 +322,9 @@ public class RedditRipper extends AlbumRipper {
             try {
                 URL mediaURL;
             	if (!media.getJSONObject("s").isNull("gif")) {
-            		mediaURL = new URL(media.getJSONObject("s").getString("gif").replaceAll("&amp;", "&"));
+            		mediaURL = Urls.create(media.getJSONObject("s").getString("gif").replaceAll("&amp;", "&"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             	} else {
-            		mediaURL = new URL(media.getJSONObject("s").getString("u").replaceAll("&amp;", "&"));
+            		mediaURL = Urls.create(media.getJSONObject("s").getString("u").replaceAll("&amp;", "&"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             	}
                 addURLToDownload(mediaURL, prefix, subdirectory);
             } catch (MalformedURLException | JSONException e) {
