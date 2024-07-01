@@ -9,6 +9,7 @@
   <properties>
     <excludedGroups>flaky</excludedGroups>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <versions.java-security-toolkit>1.2.0</versions.java-security-toolkit>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -18,6 +19,11 @@
         <version>5.6.2</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.github.pixee</groupId>
+        <artifactId>java-security-toolkit</artifactId>
+        <version>${versions.java-security-toolkit}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -87,6 +93,10 @@
       <groupId>org.java-websocket</groupId>
       <artifactId>Java-WebSocket</artifactId>
       <version>1.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.pixee</groupId>
+      <artifactId>java-security-toolkit</artifactId>
     </dependency>
   </dependencies>
   <build>
