@@ -1,5 +1,6 @@
 package com.rarchives.ripme;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -257,7 +258,7 @@ public class App {
 
             try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
                 String url;
-                while ((url = br.readLine()) != null) {
+                while ((url = BoundedLineReader.readLine(br, 5_000_000)) != null) {
                     if (url.startsWith("//") || url.startsWith("#")) {
                         logger.debug("Skipping over line \"" + url + "\"because it is a comment");
                     } else {
