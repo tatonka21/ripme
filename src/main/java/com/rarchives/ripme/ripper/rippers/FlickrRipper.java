@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -74,7 +76,7 @@ public class FlickrRipper extends AbstractHTMLRipper {
             }
             sUrl += "pool";
         }
-        return new URL(sUrl);
+        return Urls.create(sUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
     // FLickr is one of those sites what includes a api key in sites javascript
     // TODO let the user provide their own api key
@@ -129,7 +131,7 @@ public class FlickrRipper extends AbstractHTMLRipper {
         String apiURL = null;
         try {
             apiURL = apiURLBuilder(getAlbum(url.toExternalForm()), page, apiKey);
-            pageURL = new URL(apiURL);
+            pageURL = Urls.create(apiURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         }  catch (MalformedURLException e) {
             LOGGER.error("Unable to get api link " + apiURL + " is malformed");
         }
@@ -295,7 +297,7 @@ public class FlickrRipper extends AbstractHTMLRipper {
         TreeMap<Integer, String> imageURLMap = new TreeMap<>();
 
         try {
-            URL imageAPIURL = new URL("https://www.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + apiKey + "&photo_id=" + imageID + "&format=json&nojsoncallback=1");
+            URL imageAPIURL = Urls.create("https://www.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + apiKey + "&photo_id=" + imageID + "&format=json&nojsoncallback=1", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             JSONArray imageSizes = new JSONObject(Http.url(imageAPIURL).ignoreContentType().get().text()).getJSONObject("sizes").getJSONArray("size");
             for (int i = 0; i < imageSizes.length(); i++) {
                 JSONObject imageInfo = imageSizes.getJSONObject(i);
@@ -310,6 +312,6 @@ public class FlickrRipper extends AbstractHTMLRipper {
             LOGGER.error("IOException while looking at image sizes: " + e.getMessage());
         }
 
-        return new URL(imageURLMap.lastEntry().getValue());
+        return Urls.create(imageURLMap.lastEntry().getValue(), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 }

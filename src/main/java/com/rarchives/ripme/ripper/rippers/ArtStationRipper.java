@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -90,7 +92,7 @@ public class ArtStationRipper extends AbstractJSONRipper {
             if (albumContent.getInt("total_count") > 0) {
                 // Get JSON of the first project and return it
                 JSONObject projectInfo = albumContent.getJSONArray("data").getJSONObject(0);
-                ParsedURL projectURL = parseURL(new URL(projectInfo.getString("permalink")));
+                ParsedURL projectURL = parseURL(Urls.create(projectInfo.getString("permalink"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                 // return Http.url(projectURL.getLocation()).getJSON();
                 return getJson(projectURL.getLocation());
             }
@@ -125,7 +127,7 @@ public class ArtStationRipper extends AbstractJSONRipper {
             if (albumContent.getInt("total_count") > currentProject) {
                 // Get JSON of the next project and return it
                 JSONObject projectInfo = albumContent.getJSONArray("data").getJSONObject(projectIndex);
-                ParsedURL projectURL = parseURL(new URL(projectInfo.getString("permalink")));
+                ParsedURL projectURL = parseURL(Urls.create(projectInfo.getString("permalink"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                 projectIndex++;
                 // return Http.url(projectURL.getLocation()).getJSON();
                 return getJson(projectURL.getLocation());
@@ -321,7 +323,7 @@ public class ArtStationRipper extends AbstractJSONRipper {
     }
 
     private JSONObject getJson(String url) throws IOException {
-        return getJson(new URL(url));
+        return getJson(Urls.create(url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     }
 
 }

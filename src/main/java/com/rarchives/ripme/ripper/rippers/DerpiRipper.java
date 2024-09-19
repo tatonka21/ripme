@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,7 +56,7 @@ public class DerpiRipper extends AbstractJSONRipper {
             newU += "&key=" + key;
         }
 
-        return new URL(newU);
+        return Urls.create(newU, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     @Override
@@ -102,7 +104,7 @@ public class DerpiRipper extends AbstractJSONRipper {
     public JSONObject getNextPage(JSONObject doc) throws IOException {
         currPage++;
         String u = currUrl.toExternalForm() + "&page=" + Integer.toString(currPage);
-        JSONObject json = Http.url(new URL(u)).getJSON();
+        JSONObject json = Http.url(Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).getJSON();
         JSONArray arr;
         if (json.has("images")) {
             arr = json.getJSONArray("images");

@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,7 +51,7 @@ public class XhamsterRipper extends AbstractHTMLRipper {
         }
         String URLToReturn = url.toExternalForm();
         URLToReturn = URLToReturn.replaceAll("https?://\\w?\\w?\\.?xhamster([^<]*)\\.", "https://m.xhamster$1.");
-        URL san_url = new URL(URLToReturn);
+        URL san_url = Urls.create(URLToReturn, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         LOGGER.info("sanitized URL is " + san_url.toExternalForm());
         return san_url;
     }
@@ -164,7 +166,7 @@ public class XhamsterRipper extends AbstractHTMLRipper {
                   // This works around some redirect fuckery xhamster likes to do where visiting m.xhamster.com sends to
                   // the page chamster.com but displays the mobile site from m.xhamster.com
                   pageWithImageUrl = pageWithImageUrl.replaceAll("://xhamster([^<]*)\\.", "://m.xhamster$1.");
-                  String image = Http.url(new URL(pageWithImageUrl)).get().select("a > img#photoCurr").attr("src");
+                  String image = Http.url(Urls.create(pageWithImageUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).get().select("a > img#photoCurr").attr("src");
                   downloadFile(image);
               } catch (IOException e) {
                   LOGGER.error("Was unable to load page " + pageWithImageUrl);
@@ -184,7 +186,7 @@ public class XhamsterRipper extends AbstractHTMLRipper {
 
     private void downloadFile(String url) {
         try {
-            addURLToDownload(new URL(url), getPrefix(index));
+            addURLToDownload(Urls.create(url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), getPrefix(index));
             index = index + 1;
         } catch (MalformedURLException e) {
             LOGGER.error("The url \"" + url + "\" is malformed");

@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ui;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
@@ -707,7 +709,7 @@ public final class MainWindow implements Runnable, RipStatusHandler {
                     if (!urlText.startsWith("http")) {
                         urlText = "http://" + urlText;
                     }
-                    URL url = new URL(urlText);
+                    URL url = Urls.create(urlText, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                     AbstractRipper ripper = AbstractRipper.getRipper(url);
                     statusWithColor(ripper.getHost() + " album detected", Color.GREEN);
                 } catch (Exception e) {
@@ -1254,7 +1256,7 @@ public final class MainWindow implements Runnable, RipStatusHandler {
         }
         URL url = null;
         try {
-            url = new URL(urlString);
+            url = Urls.create(urlString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         } catch (MalformedURLException e) {
             LOGGER.error("[!] Could not generate URL for '" + urlString + "'", e);
             error("Given URL is not valid, expecting http://website.com/page/...");
@@ -1312,7 +1314,7 @@ public final class MainWindow implements Runnable, RipStatusHandler {
             if (!urlText.startsWith("http")) {
                 urlText = "http://" + urlText;
             }
-            URL url = new URL(urlText);
+            URL url = Urls.create(urlText, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             // Ripper is needed here to throw/not throw an Exception
             AbstractRipper ripper = AbstractRipper.getRipper(url);
             return true;

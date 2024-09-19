@@ -3,6 +3,8 @@ package com.rarchives.ripme.ripper.rippers;
 import com.rarchives.ripme.ripper.AbstractHTMLRipper;
 import com.rarchives.ripme.ui.RipStatusMessage;
 import com.rarchives.ripme.utils.Http;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -94,7 +96,7 @@ public class ErofusRipper extends AbstractHTMLRipper {
                 Map<String,String> opts = new HashMap<String, String>();
                 opts.put("subdirectory", page.title().replaceAll(" \\| Erofus - Sex and Porn Comics", "").replaceAll(" ", "_"));
                 opts.put("prefix", getPrefix(x));
-                addURLToDownload(new URL(image), opts);
+                addURLToDownload(Urls.create(image, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), opts);
             } catch (MalformedURLException e) {
                 LOGGER.info(e.getMessage());
             }

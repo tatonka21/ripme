@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -62,7 +64,7 @@ public class JagodibujaRipper extends AbstractHTMLRipper {
                 Element elem = comicPage.select("span.full-size-link > a").first();
                 LOGGER.info("Got link " + elem.attr("href"));
                 try {
-                    addURLToDownload(new URL(elem.attr("href")), "");
+                    addURLToDownload(Urls.create(elem.attr("href"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), "");
                 } catch (MalformedURLException e) {
                     LOGGER.warn("Malformed URL");
                     e.printStackTrace();
