@@ -1,5 +1,6 @@
 package com.rarchives.ripme.ui;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
@@ -926,7 +927,7 @@ public final class MainWindow implements Runnable, RipStatusHandler {
                 return;
             }
             try (BufferedReader br = new BufferedReader(new FileReader(chosenPath))) {
-                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                for (String line = BoundedLineReader.readLine(br, 5_000_000); line != null; line = BoundedLineReader.readLine(br, 5_000_000)) {
                     line = line.trim();
                     if (line.startsWith("http")) {
                         MainWindow.addUrlToQueue(line);
@@ -1478,13 +1479,13 @@ public final class MainWindow implements Runnable, RipStatusHandler {
                     // read the output from the command
                     LOGGER.info("Command output:\n");
                     String s = null;
-                    while ((s = stdInput.readLine()) != null) {
+                    while ((s = BoundedLineReader.readLine(stdInput, 5_000_000)) != null) {
                         LOGGER.info(s);
                     }
 
                     // read any errors from the attempted command
                     LOGGER.error("Command error:\n");
-                    while ((s = stdError.readLine()) != null) {
+                    while ((s = BoundedLineReader.readLine(stdError, 5_000_000)) != null) {
                         System.out.println(s);
                     }
                 } catch (IOException e) {
