@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -52,7 +54,7 @@ public class PornhubRipper extends AbstractHTMLRipper {
         if (nextPageLink.isEmpty()){
             throw new IOException("No more pages");
         } else {
-            URL nextURL = new URL(this.url, nextPageLink.first().attr("href"));
+            URL nextURL = Urls.create(this.url, nextPageLink.first().attr("href"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             return Http.url(nextURL).get();
         }
     }
@@ -89,7 +91,7 @@ public class PornhubRipper extends AbstractHTMLRipper {
         String u = url.toExternalForm();
         if (u.contains("?")) {
             u = u.substring(0, u.indexOf("?"));
-            return new URL(u);
+            return Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         } else {
             return url;
         }
@@ -159,7 +161,7 @@ public class PornhubRipper extends AbstractHTMLRipper {
                     prefix = String.format("%03d_", index);
                 }
 
-                URL imgurl = new URL(url, imgsrc);
+                URL imgurl = Urls.create(url, imgsrc, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 addURLToDownload(imgurl, prefix);
 
             } catch (IOException e) {

@@ -3,6 +3,8 @@ package com.rarchives.ripme.ripper.rippers;
 import com.rarchives.ripme.ripper.AbstractSingleFileRipper;
 import com.rarchives.ripme.ripper.DownloadThreadPool;
 import com.rarchives.ripme.utils.Http;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 
 import org.json.JSONObject;
 import org.jsoup.Connection.Method;
@@ -97,7 +99,7 @@ public class HentaidudeRipper extends AbstractSingleFileRipper {
         public void run() {
             try {
                 Document doc = Http.url(url).get();
-                URL videoSourceUrl = new URL(getVideoUrl(doc));
+                URL videoSourceUrl = Urls.create(getVideoUrl(doc), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 addURLToDownload(videoSourceUrl, "", "", "", null, getVideoName(), "mp4");
             } catch (Exception e) {
                 LOGGER.error("Could not get video url for " + getVideoName(), e);

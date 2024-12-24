@@ -3,6 +3,8 @@ package com.rarchives.ripme.ripper.rippers;
 import com.rarchives.ripme.ripper.AbstractHTMLRipper;
 import com.rarchives.ripme.ripper.DownloadThreadPool;
 import com.rarchives.ripme.utils.Http;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
@@ -164,7 +166,7 @@ public class HqpornerRipper extends AbstractHTMLRipper {
 				}
 
 				if (downloadUrl != null) {
-					addURLToDownload(new URL(downloadUrl), "", subdirectory, "", null, getVideoName(), "mp4");
+					addURLToDownload(Urls.create(downloadUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), "", subdirectory, "", null, getVideoName(), "mp4");
 				}
 
 			} catch (IOException e) {
@@ -215,7 +217,7 @@ public class HqpornerRipper extends AbstractHTMLRipper {
 
 			try {
 				logger.info("Trying to download from unknown video host " + videoPageurl);
-				URL url = new URL(videoPageurl);
+				URL url = Urls.create(videoPageurl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
 				Response response = Http.url(url).referrer(hqpornerVideoPageUrl).response();
 				Document doc = response.parse();
 

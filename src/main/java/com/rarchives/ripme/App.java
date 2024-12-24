@@ -1,5 +1,7 @@
 package com.rarchives.ripme;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -185,7 +187,7 @@ public class App {
             }
             for (HistoryEntry entry : HISTORY.toList()) {
                 try {
-                    URL url = new URL(entry.url);
+                    URL url = Urls.create(entry.url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                      rip(url);
                 } catch (Exception e) {
                     logger.error("[!] Failed to rip URL " + entry.url, e);
@@ -214,7 +216,7 @@ public class App {
                 if (entry.selected) {
                     added++;
                     try {
-                        URL url = new URL(entry.url);
+                        URL url = Urls.create(entry.url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                         rip(url);
                     } catch (Exception e) {
                         logger.error("[!] Failed to rip URL " + entry.url, e);
@@ -292,7 +294,7 @@ public class App {
      */
     private static void ripURL(String targetURL, boolean saveConfig) {
         try {
-            URL url = new URL(targetURL);
+            URL url = Urls.create(targetURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             rip(url);
             saveHistory();
         } catch (MalformedURLException e) {

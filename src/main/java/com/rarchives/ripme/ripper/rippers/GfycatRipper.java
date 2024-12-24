@@ -1,6 +1,8 @@
 package com.rarchives.ripme.ripper.rippers;
 
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,7 +32,7 @@ public class GfycatRipper extends AbstractHTMLRipper {
 
 
     public GfycatRipper(URL url) throws IOException {
-        super(new URL(url.toExternalForm().split("-")[0].replace("thumbs.", "")));
+        super(Urls.create(url.toExternalForm().split("-")[0].replace("thumbs.", ""), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     }
 
     @Override
@@ -53,7 +55,7 @@ public class GfycatRipper extends AbstractHTMLRipper {
         String sUrl = url.toExternalForm();
         sUrl = sUrl.replace("/gifs/detail", "");
         sUrl = sUrl.replace("/amp", "");
-        return new URL(sUrl);
+        return Urls.create(sUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     public boolean isProfile() {
@@ -68,7 +70,7 @@ public class GfycatRipper extends AbstractHTMLRipper {
             return Http.url(url).referrer(REFERRER).get();
         } else {
             username = getGID(url);
-            return Http.url(new URL("https://api.gfycat.com/v1/users/" +  username + "/gfycats")).referrer((REFERRER)).ignoreContentType().get();
+            return Http.url(Urls.create("https://api.gfycat.com/v1/users/" +  username + "/gfycats", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).referrer((REFERRER)).ignoreContentType().get();
         }
     }
 
@@ -108,7 +110,7 @@ public class GfycatRipper extends AbstractHTMLRipper {
         if (cursor.equals("")) {
             throw new IOException("No more pages");
         }
-        return Http.url(new URL("https://api.gfycat.com/v1/users/" +  username + "/gfycats?count=" + count + "&cursor=" + cursor)).ignoreContentType().get();
+        return Http.url(Urls.create("https://api.gfycat.com/v1/users/" +  username + "/gfycats?count=" + count + "&cursor=" + cursor, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).ignoreContentType().get();
     }
 
     @Override
@@ -144,7 +146,7 @@ public class GfycatRipper extends AbstractHTMLRipper {
         LOGGER.info("Retrieving " + url.toExternalForm());
 
         //Sanitize the URL first
-        url = new URL(url.toExternalForm().replace("/gifs/detail", ""));
+        url = Urls.create(url.toExternalForm().replace("/gifs/detail", ""), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
 
         Document doc = Http.url(url).get();
         Elements videos = doc.select("script");

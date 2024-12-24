@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -98,7 +100,7 @@ public class LusciousRipper extends AbstractHTMLRipper {
                 sanitizedUrl = sanitizedUrl.replaceFirst(
                         "^https?:\\/\\/(?:members\\.|old\\.|www\\.)?luscious.net",
                         "https://old.luscious.net");
-                return new URL(sanitizedUrl);
+                return Urls.create(sanitizedUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             }
 
             throw new Exception("ERROR: Unable to sanitize url.");
@@ -145,7 +147,7 @@ public class LusciousRipper extends AbstractHTMLRipper {
                 }
 
                 //If a valid download url was found.
-                addURLToDownload(new URL(downloadUrl), getPrefix(index));
+                addURLToDownload(Urls.create(downloadUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), getPrefix(index));
 
             } catch (IOException e) {
                 LOGGER.error("Error downloadiong url " + url, e);

@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -285,7 +287,7 @@ public abstract class AbstractRipper
         if (url.toExternalForm().contains(" ")) {
             // If for some reason the url with all spaces encoded as %20 is malformed print an error
             try {
-                url = new URL(url.toExternalForm().replaceAll(" ", "%20"));
+                url = Urls.create(url.toExternalForm().replaceAll(" ", "%20"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             } catch (MalformedURLException e) {
                 LOGGER.error("Unable to remove spaces from url\nURL: " + url.toExternalForm());
                 e.printStackTrace();

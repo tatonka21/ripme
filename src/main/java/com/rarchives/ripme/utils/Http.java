@@ -1,5 +1,7 @@
 package com.rarchives.ripme.utils;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -70,7 +72,7 @@ public class Http {
 
         String cookieDomain = ""; 
         try {
-            URL parsed = new URL(u);
+            URL parsed = Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             String cookieStr = "";
 
             String[] parts = parsed.getHost().split("\\.");

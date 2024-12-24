@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,7 +59,7 @@ public class ImagefapRipper extends AbstractHTMLRipper {
         }
         newURL += "gid=" + gid + "&view=2";
         LOGGER.debug("Changed URL from " + url + " to " + newURL);
-        return new URL(newURL);
+        return Urls.create(newURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class ImagefapRipper extends AbstractHTMLRipper {
         sleep(PAGE_SLEEP_TIME);
 
         // Load next page
-        Document nextPage = getPageWithRetries(new URL(nextURL));
+        Document nextPage = getPageWithRetries(Urls.create(nextURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 
         return nextPage;
     }
@@ -177,7 +179,7 @@ public class ImagefapRipper extends AbstractHTMLRipper {
             // Sleep before fetching image.
             sleep(IMAGE_SLEEP_TIME);
 
-            Document doc = getPageWithRetries(new URL(pageURL));
+            Document doc = getPageWithRetries(Urls.create(pageURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             return doc.select("img#mainPhoto").attr("src");
         } catch (IOException e) {
             return null;

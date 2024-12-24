@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -87,7 +89,7 @@ public class TapasticRipper extends AbstractHTMLRipper {
                 prefix.append(String.format("-%0" + imgLog + "dof%0" + imgLog + "d-", i + 1, images.size()));
                 prefix.append(episode.filename.replace(" ", "-"));
                 prefix.append("-");
-                addURLToDownload(new URL(link), prefix.toString());
+                addURLToDownload(Urls.create(link, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), prefix.toString());
                 if (isThisATest()) {
                     break;
                 }

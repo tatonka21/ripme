@@ -1,5 +1,7 @@
 package com.rarchives.ripme.utils;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,7 +60,7 @@ public class RipUtils {
         }  else if (url.getHost().endsWith("i.imgur.com") && url.toExternalForm().contains("gifv")) {
             // links to imgur gifvs
             try {
-                result.add(new URL(url.toExternalForm().replaceAll(".gifv", ".mp4")));
+                result.add(Urls.create(url.toExternalForm().replaceAll(".gifv", ".mp4"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             } catch (IOException e) {
                 logger.info("Couldn't get gifv from " + url);
             }
@@ -70,7 +72,7 @@ public class RipUtils {
                 logger.debug("Fetching gfycat page " + url);
                 String videoURL = GfycatRipper.getVideoURL(url);
                 logger.debug("Got gfycat URL: " + videoURL);
-                result.add(new URL(videoURL));
+                result.add(Urls.create(videoURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             } catch (IOException e) {
                 // Do nothing
                 logger.warn("Exception while retrieving gfycat page:", e);
@@ -82,7 +84,7 @@ public class RipUtils {
                 logger.debug("Fetching redgifs page " + url);
                 String videoURL = RedgifsRipper.getVideoURL(url);
                 logger.debug("Got redgifs URL: " + videoURL);
-                result.add(new URL(videoURL));
+                result.add(Urls.create(videoURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             } catch (IOException e) {
                 // Do nothing
                 logger.warn("Exception while retrieving redgifs page:", e);
@@ -119,7 +121,7 @@ public class RipUtils {
                 EromeRipper r = new EromeRipper(url);
                 Document tempDoc = r.getFirstPage();
                 for (String u : r.getURLsFromPage(tempDoc)) {
-                    result.add(new URL(u));
+                    result.add(Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                 }
             } catch (IOException e) {
                 // Do nothing
@@ -134,7 +136,7 @@ public class RipUtils {
             logger.info("URL: " + url.toExternalForm());
             String u = url.toExternalForm().replaceAll("&amp;", "&");
             try {
-                result.add(new URL(u));
+                result.add(Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             } catch (MalformedURLException e) {
             }
             return result;
@@ -145,7 +147,7 @@ public class RipUtils {
         m = p.matcher(url.toExternalForm());
         if (m.matches()) {
             try {
-                URL singleURL = new URL(m.group(1));
+                URL singleURL = Urls.create(m.group(1), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 logger.debug("Found single URL: " + singleURL);
                 result.add(singleURL);
                 return result;
@@ -163,15 +165,15 @@ public class RipUtils {
                         .get();
                 for (Element el : doc.select("meta")) {
                     if (el.attr("property").equals("og:video")) {
-                        result.add(new URL(el.attr("content")));
+                        result.add(Urls.create(el.attr("content"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                         return result;
                     }
                     else if (el.attr("name").equals("twitter:image:src")) {
-                        result.add(new URL(el.attr("content")));
+                        result.add(Urls.create(el.attr("content"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                         return result;
                     }
                     else if (el.attr("name").equals("twitter:image")) {
-                        result.add(new URL(el.attr("content")));
+                        result.add(Urls.create(el.attr("content"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                         return result;
                     }
                 }

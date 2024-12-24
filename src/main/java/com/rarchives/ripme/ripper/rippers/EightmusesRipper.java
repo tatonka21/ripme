@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -123,7 +125,7 @@ public class EightmusesRipper extends AbstractHTMLRipper {
                     try {
                         for (int i = 0; i != json.getJSONArray("pictures").length(); i++) {
                             image = "https://www.8muses.com/image/fl/" + json.getJSONArray("pictures").getJSONObject(i).getString("publicUri");
-                            URL imageUrl = new URL(image);
+                            URL imageUrl = Urls.create(image, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                             addURLToDownload(imageUrl, getPrefixShort(x), getSubdir(page.select("title").text()), this.url.toExternalForm(), cookies, "", null, true);
                             // X is our page index
                             x++;
