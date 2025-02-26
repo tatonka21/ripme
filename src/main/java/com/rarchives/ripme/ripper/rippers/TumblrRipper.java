@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -75,7 +76,7 @@ public class TumblrRipper extends AlbumRipper {
         final List<String> APIKEYS = Arrays.asList("JFNLu3CbINQjRdUvZibXW9VpSEVYYtiPJ86o8YmvgLZIoKyuNX",
                 "FQrwZMCxVnzonv90rgNUJcAk4FpnoS0mYuSuGYqIpM2cFgp9L4",
                 "qpdkY6nMknksfvYAhf2xIHp0iNRLkMlcWShxqzXyFJRxIsZ1Zz");
-        int genNum = new Random().nextInt(APIKEYS.size());
+        int genNum = new SecureRandom().nextInt(APIKEYS.size());
         LOGGER.info(genNum);
         final String API_KEY = APIKEYS.get(genNum); // Select random API key from APIKEYS
         return API_KEY;
