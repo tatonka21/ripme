@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,7 +50,7 @@ public class FuskatorRipper extends AbstractHTMLRipper {
         if (u.contains("/expanded/")) {
             u = u.replaceAll("/expanded/", "/full/");
         }
-        return new URL(u);
+        return Urls.create(u, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     @Override

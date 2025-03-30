@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -150,7 +152,7 @@ class DownloadFileThread extends Thread {
                         redirected = true;
                     }
                     String location = huc.getHeaderField("Location");
-                    urlToDownload = new URL(location);
+                    urlToDownload = Urls.create(location, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                     // Throw exception so download can be retried
                     throw new IOException("Redirect status code " + statusCode + " - redirect to " + location);
                 }

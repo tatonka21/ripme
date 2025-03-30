@@ -5,6 +5,8 @@
  */
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -209,7 +211,7 @@ public class EroShareRipper extends AbstractHTMLRipper {
         for (Element img : imgs) {
             if (img.hasClass("album-image")) {
                 String imageURL = img.attr("src");
-                URLs.add(new URL(imageURL));
+                URLs.add(Urls.create(imageURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             }
         }
         //Videos
@@ -218,7 +220,7 @@ public class EroShareRipper extends AbstractHTMLRipper {
             if (vid.hasClass("album-video")) {
                 Elements source = vid.getElementsByTag("source");
                 String videoURL = source.first().attr("src");
-                URLs.add(new URL(videoURL));
+                URLs.add(Urls.create(videoURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             }
         }
 

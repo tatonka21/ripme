@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -84,7 +86,7 @@ public class EromeRipper extends AbstractHTMLRipper {
 
     @Override
     public URL sanitizeURL(URL url) throws MalformedURLException {
-        return new URL(url.toExternalForm().replaceAll("https?://erome.com", "https://www.erome.com"));
+        return Urls.create(url.toExternalForm().replaceAll("https?://erome.com", "https://www.erome.com"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
 

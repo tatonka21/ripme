@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -164,7 +166,7 @@ public class FivehundredpxRipper extends AbstractJSONRipper {
 
     @Override
     public JSONObject getFirstPage() throws IOException {
-        URL apiURL = new URL(baseURL + "&consumer_key=" + CONSUMER_KEY);
+        URL apiURL = Urls.create(baseURL + "&consumer_key=" + CONSUMER_KEY, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         LOGGER.debug("apiURL: " + apiURL);
         JSONObject json = Http.url(apiURL).getJSON();
 
@@ -248,9 +250,9 @@ public class FivehundredpxRipper extends AbstractJSONRipper {
 
         sleep(500);
         ++page;
-        URL apiURL = new URL(baseURL
+        URL apiURL = Urls.create(baseURL
                              + "&page=" + page
-                             + "&consumer_key=" + CONSUMER_KEY);
+                             + "&consumer_key=" + CONSUMER_KEY, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         return Http.url(apiURL).getJSON();
     }
 
@@ -310,7 +312,7 @@ public class FivehundredpxRipper extends AbstractJSONRipper {
 
     private boolean urlExists(String url) {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) Urls.create(url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openConnection();
             connection.setRequestMethod("HEAD");
             if (connection.getResponseCode() != 200) {
                 throw new IOException("Couldn't find full-size image at " + url);

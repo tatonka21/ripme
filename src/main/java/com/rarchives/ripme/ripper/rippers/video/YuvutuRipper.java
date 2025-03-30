@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers.video;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -74,7 +76,7 @@ public class YuvutuRipper extends VideoRipper {
             Matcher m = p.matcher(element.data());
             if (m.find()){
                 String vidUrl = m.group(1);
-                addURLToDownload(new URL(vidUrl), HOST + "_" + getGID(this.url));
+                addURLToDownload(Urls.create(vidUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), HOST + "_" + getGID(this.url));
             }
         }
         waitForThreads();

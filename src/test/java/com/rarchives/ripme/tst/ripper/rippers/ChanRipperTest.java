@@ -1,5 +1,7 @@
 package com.rarchives.ripme.tst.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ public class ChanRipperTest extends RippersTest {
     @Test
     public void testChanRipper() throws IOException {
         List<URL> contentURLs = new ArrayList<>();
-        contentURLs.add(new URL(getRandomThreadDesuarchive()));
+        contentURLs.add(Urls.create(getRandomThreadDesuarchive(), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
         for (URL url : contentURLs) {
             ChanRipper ripper = new ChanRipper(url);
             testChanRipper(ripper);

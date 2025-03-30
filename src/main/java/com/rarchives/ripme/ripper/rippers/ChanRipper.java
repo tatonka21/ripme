@@ -4,6 +4,8 @@ import com.rarchives.ripme.ripper.AbstractHTMLRipper;
 import com.rarchives.ripme.ripper.rippers.ripperhelpers.ChanSite;
 import com.rarchives.ripme.utils.Http;
 import com.rarchives.ripme.utils.RipUtils;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -256,7 +258,7 @@ public class ChanRipper extends AbstractHTMLRipper {
                 //Copied code from RedditRipper, getFilesFromURL should also implement stuff like flickr albums
                 URL originalURL;
                 try {
-                    originalURL = new URL(href);
+                    originalURL = Urls.create(href, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 } catch (MalformedURLException e) {
                     continue;
                 }

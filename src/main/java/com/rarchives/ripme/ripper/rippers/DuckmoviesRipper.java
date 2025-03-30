@@ -3,6 +3,8 @@ package com.rarchives.ripme.ripper.rippers;
 import com.rarchives.ripme.ripper.AbstractRipper;
 import com.rarchives.ripme.ripper.AbstractSingleFileRipper;
 import com.rarchives.ripme.utils.Http;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -90,7 +92,7 @@ public class DuckmoviesRipper extends AbstractSingleFileRipper {
         List<String> results = new ArrayList<>();
         String duckMoviesUrl = doc.select("iframe").attr("src");
         try {
-            Document duckDoc = Http.url(new URL(duckMoviesUrl)).get();
+            Document duckDoc = Http.url(Urls.create(duckMoviesUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).get();
             String videoURL = duckDoc.select("source").attr("src");
             // remove any white spaces so we can download the movie without a 400 error
             videoURL = videoURL.replaceAll(" ", "%20");

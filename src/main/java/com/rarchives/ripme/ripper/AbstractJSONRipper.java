@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -88,7 +90,7 @@ public abstract class AbstractJSONRipper extends AbstractRipper {
                 
                 index += 1;
                 LOGGER.debug("Found image url #" + index+ ": " + imageURL);
-                downloadURL(new URL(imageURL), index);
+                downloadURL(Urls.create(imageURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), index);
             }
 
             if (isStopped() || isThisATest()) {
