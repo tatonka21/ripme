@@ -1,5 +1,6 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -138,7 +139,7 @@ public class ScrolllerRipper extends AbstractJSONRipper {
             String inputLine;
             StringBuffer jsonString = new StringBuffer();
 
-            while ((inputLine = in.readLine()) != null) {
+            while ((inputLine = BoundedLineReader.readLine(in, 5_000_000)) != null) {
                 jsonString.append(inputLine);
             }
 
