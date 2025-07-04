@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -175,7 +177,7 @@ public class EHentaiRipper extends AbstractHTMLRipper {
         // Sleep before loading next page
         sleep(PAGE_SLEEP_TIME);
         // Load next page
-        Document nextPage = getPageWithRetries(new URL(nextURL));
+        Document nextPage = getPageWithRetries(Urls.create(nextURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
         this.lastURL = nextURL;
         return nextPage;
     }
@@ -251,7 +253,7 @@ public class EHentaiRipper extends AbstractHTMLRipper {
                         savePath += String.format("%03d_", index);
                     }
                     savePath += m.group(1);
-                    addURLToDownload(new URL(imgsrc), new File(savePath));
+                    addURLToDownload(Urls.create(imgsrc, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), new File(savePath));
                 }
                 else {
                     // Provide prefix and let the AbstractRipper "guess" the filename
@@ -259,7 +261,7 @@ public class EHentaiRipper extends AbstractHTMLRipper {
                     if (Utils.getConfigBoolean("download.save_order", true)) {
                         prefix = String.format("%03d_", index);
                     }
-                    addURLToDownload(new URL(imgsrc), prefix);
+                    addURLToDownload(Urls.create(imgsrc, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), prefix);
                 }
             } catch (IOException e) {
                 LOGGER.error("[!] Exception while loading/parsing " + this.url, e);

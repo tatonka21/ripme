@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -127,7 +129,7 @@ public abstract class AbstractHTMLRipper extends AbstractRipper {
                 for (String imageURL : imageURLs) {
                     index += 1;
                     LOGGER.debug("Found image url #" + index + ": " + imageURL);
-                    downloadURL(new URL(imageURL), index);
+                    downloadURL(Urls.create(imageURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), index);
                     if (isStopped()) {
                         break;
                     }
@@ -151,10 +153,10 @@ public abstract class AbstractHTMLRipper extends AbstractRipper {
                                             + ""
                                             + File.separator
                                             + getPrefix(index)
-                                            + (tempDesc.length > 1 ? tempDesc[1] : fileNameFromURL(new URL(textURL)))
+                                            + (tempDesc.length > 1 ? tempDesc[1] : fileNameFromURL(Urls.create(textURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)))
                                             + ".txt").exists())) {
                                 LOGGER.debug("Got description from " + textURL);
-                                saveText(new URL(textURL), "", tempDesc[0], textindex, (tempDesc.length > 1 ? tempDesc[1] : fileNameFromURL(new URL(textURL))));
+                                saveText(Urls.create(textURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), "", tempDesc[0], textindex, (tempDesc.length > 1 ? tempDesc[1] : fileNameFromURL(Urls.create(textURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS))));
                                 sleep(descSleepTime());
                             } else {
                                 LOGGER.debug("Description from " + textURL + " already exists.");

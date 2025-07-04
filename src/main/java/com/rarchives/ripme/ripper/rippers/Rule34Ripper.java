@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,7 +54,7 @@ public class Rule34Ripper extends AbstractHTMLRipper {
     }
 
     public URL getAPIUrl() throws MalformedURLException {
-        URL urlToReturn = new URL("https://rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&tags=" + getGID(url));
+        URL urlToReturn = Urls.create("https://rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&tags=" + getGID(url), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         return urlToReturn;
     }
 

@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -59,7 +61,7 @@ public class MotherlessRipper extends AbstractHTMLRipper {
         if (!notHome) {
             StringBuilder newPath = new StringBuilder(path);
             newPath.insert(2, "M");
-            firstURL = new URL(this.url, "https://" + DOMAIN + newPath);
+            firstURL = Urls.create(this.url, "https://" + DOMAIN + newPath, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             LOGGER.info("Changed URL to " + firstURL);
         }
         return Http.url(firstURL).referrer("https://motherless.com").get();
@@ -72,7 +74,7 @@ public class MotherlessRipper extends AbstractHTMLRipper {
             throw new IOException("Last page reached");
         } else {
             String referrerLink = doc.head().select("link[rel=canonical]").first().attr("href");
-            URL nextURL = new URL(this.url, nextPageLink.first().attr("href"));
+            URL nextURL = Urls.create(this.url, nextPageLink.first().attr("href"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
             return Http.url(nextURL).referrer(referrerLink).get();
         }
     }
@@ -180,7 +182,7 @@ public class MotherlessRipper extends AbstractHTMLRipper {
                     if (Utils.getConfigBoolean("download.save_order", true)) {
                         prefix = String.format("%03d_", index);
                     }
-                    addURLToDownload(new URL(file), prefix);
+                    addURLToDownload(Urls.create(file, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS), prefix);
                 } else {
                     LOGGER.warn("[!] could not find '__fileurl' at " + url);
                 }

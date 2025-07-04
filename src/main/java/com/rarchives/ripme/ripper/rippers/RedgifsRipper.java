@@ -2,6 +2,8 @@ package com.rarchives.ripme.ripper.rippers;
 
 import com.rarchives.ripme.ripper.AbstractHTMLRipper;
 import com.rarchives.ripme.utils.Http;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
@@ -29,7 +31,7 @@ public class RedgifsRipper extends AbstractHTMLRipper {
     int searchStart = 0;
 
     public RedgifsRipper(URL url) throws IOException {
-        super(new URL(url.toExternalForm().replace("thumbs.", "")));
+        super(Urls.create(url.toExternalForm().replace("thumbs.", ""), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     }
 
     @Override
@@ -51,7 +53,7 @@ public class RedgifsRipper extends AbstractHTMLRipper {
         sUrl = sUrl.replace("/gifs/detail", "");
         sUrl = sUrl.replace("/amp", "");
         sUrl = sUrl.replace("gifdeliverynetwork.com", "redgifs.com/watch");
-        return new URL(sUrl);
+        return Urls.create(sUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     }
 
     public Matcher isProfile() {
@@ -76,10 +78,10 @@ public class RedgifsRipper extends AbstractHTMLRipper {
         } else if (isSearch().matches()) {
             searchText = getGID(url).replace("-", " ");
             return Http.url(
-                    new URL("https://napi.redgifs.com/v1/gfycats/search?search_text=" + searchText + "&count=" + searchCount + "&start=" + searchStart*searchCount)).ignoreContentType().get();
+                    Urls.create("https://napi.redgifs.com/v1/gfycats/search?search_text=" + searchText + "&count=" + searchCount + "&start=" + searchStart*searchCount, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).ignoreContentType().get();
         } else {
             username = getGID(url);
-            return Http.url(new URL("https://napi.redgifs.com/v1/users/" +  username + "/gfycats?count=" + count))
+            return Http.url(Urls.create("https://napi.redgifs.com/v1/users/" +  username + "/gfycats?count=" + count, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS))
                        .ignoreContentType().get();
         }
     }
@@ -126,15 +128,15 @@ public class RedgifsRipper extends AbstractHTMLRipper {
     public Document getNextPage(Document doc) throws IOException {
         if (isSearch().matches()) {
             Document d = Http.url(
-                    new URL("https://napi.redgifs.com/v1/gfycats/search?search_text=" + searchText
-                                    + "&count=" + searchCount + "&start=" + searchCount*++searchStart))
+                    Urls.create("https://napi.redgifs.com/v1/gfycats/search?search_text=" + searchText
+                                    + "&count=" + searchCount + "&start=" + searchCount*++searchStart, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS))
                        .ignoreContentType().get();
             return (hasURLs(d).isEmpty()) ? null : d;
         } else {
             if (cursor.equals("")) {
                 return null;
             } else {
-                Document d =  Http.url(new URL("https://napi.redgifs.com/v1/users/" +  username + "/gfycats?count=" + count + "&cursor=" + cursor)).ignoreContentType().get();
+                Document d =  Http.url(Urls.create("https://napi.redgifs.com/v1/users/" +  username + "/gfycats?count=" + count + "&cursor=" + cursor, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).ignoreContentType().get();
                 return (hasURLs(d).isEmpty()) ? null : d;
             }
         }
@@ -184,7 +186,7 @@ public class RedgifsRipper extends AbstractHTMLRipper {
         LOGGER.info("Retrieving " + url.toExternalForm());
 
         //Sanitize the URL first
-        url = new URL(url.toExternalForm().replace("/gifs/detail", ""));
+        url = Urls.create(url.toExternalForm().replace("/gifs/detail", ""), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
 
         Document doc = Http.url(url).get();
         Elements videos = doc.select("script");

@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -89,7 +91,7 @@ public class HentaiNexusRipper extends AbstractJSONRipper {
     public String getJsonEncodedStringFromPage() throws MalformedURLException, IOException
     {
         // Image data only appears on the /read/ page and not on the /view/ one.
-        URL readUrl = new URL(String.format("http://hentainexus.com/read/%s",getGID(url)));
+        URL readUrl = Urls.create(String.format("http://hentainexus.com/read/%s",getGID(url)), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         Document document = Http.url(readUrl).response().parse();
 
         for (Element scripts : document.getElementsByTag("script")) {

@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -62,7 +64,7 @@ public class ImagearnRipper extends AbstractHTMLRipper {
             LOGGER.info("LINK: " + link.toString());
             if (link.hasAttr("href")
                     && link.attr("href").contains("gallery.php")) {
-                url = new URL("http://imagearn.com/" + link.attr("href"));
+                url = Urls.create("http://imagearn.com/" + link.attr("href"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 LOGGER.info("[!] Found gallery from given link: " + url);
                 return url;
             }

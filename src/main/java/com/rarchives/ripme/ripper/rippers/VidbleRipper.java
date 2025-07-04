@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -79,7 +81,7 @@ public class VidbleRipper extends AbstractHTMLRipper {
         List<URL> urls = new ArrayList<>();
         Document doc = Http.url(url).get();
         for (String stringURL : getURLsFromPageStatic(doc)) {
-            urls.add(new URL(stringURL));
+            urls.add(Urls.create(stringURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
         }
         return urls;
     }

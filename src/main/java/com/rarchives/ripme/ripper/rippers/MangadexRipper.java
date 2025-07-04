@@ -5,6 +5,8 @@ import com.rarchives.ripme.ui.History;
 import com.rarchives.ripme.ui.RipStatusMessage;
 import com.rarchives.ripme.utils.Http;
 import com.rarchives.ripme.utils.Utils;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -85,10 +87,10 @@ public class MangadexRipper extends AbstractJSONRipper {
         String chapterID = getChapterID(url.toExternalForm());
         String mangaID = getMangaID(url.toExternalForm());
         if(mangaID!=null){
-            return Http.url(new URL(mangaApiEndPoint+mangaID)).getJSON();
+            return Http.url(Urls.create(mangaApiEndPoint+mangaID, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).getJSON();
         }
         else
-            return Http.url(new URL(chapterApiEndPoint + chapterID)).getJSON();
+            return Http.url(Urls.create(chapterApiEndPoint + chapterID, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).getJSON();
     }
 
     @Override
@@ -132,7 +134,7 @@ public class MangadexRipper extends AbstractJSONRipper {
         while(it.hasNext()) {
             double key =(double) it.next();
             try {
-                chapterJSON = Http.url(new URL(chapterApiEndPoint + treeMap.get(key))).getJSON();
+                chapterJSON = Http.url(Urls.create(chapterApiEndPoint + treeMap.get(key), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).getJSON();
             } catch (IOException e) {
                 e.printStackTrace();
             }

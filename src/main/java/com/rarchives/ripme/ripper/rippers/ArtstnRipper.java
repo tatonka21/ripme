@@ -1,5 +1,7 @@
 package com.rarchives.ripme.ripper.rippers;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,7 +52,7 @@ public class ArtstnRipper extends ArtStationRipper {
 		LOGGER.info("Checking url: " + url);
 		Response response = Http.url(url).connection().followRedirects(false).execute();
 		if (response.statusCode() / 100 == 3 && response.hasHeader("location")) {
-			return getFinalUrl(new URL(response.header("location")));
+			return getFinalUrl(Urls.create(response.header("location"), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 		} else {
 			return null;
 		}
