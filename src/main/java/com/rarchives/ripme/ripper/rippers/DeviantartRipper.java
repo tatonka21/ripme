@@ -5,6 +5,7 @@ import com.rarchives.ripme.ripper.DownloadThreadPool;
 import com.rarchives.ripme.ui.RipStatusMessage.STATUS;
 import com.rarchives.ripme.utils.Http;
 import com.rarchives.ripme.utils.Utils;
+import io.github.pixee.security.ObjectInputFilters;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -466,6 +467,7 @@ public class DeviantartRipper extends AbstractHTMLRipper {
 	private Map<String, String> deserialize(String s) throws IOException, ClassNotFoundException {
 		byte[] data = Base64.getDecoder().decode(s);
 		ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+		ObjectInputFilters.enableObjectFilterIfUnprotected(ois);
 		HashMap<String, String> o = (HashMap<String, String>) ois.readObject(); // Unchecked cast here but should never
 																				// be something else
 		ois.close();
