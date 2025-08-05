@@ -1,5 +1,6 @@
 package com.rarchives.ripme.ui;
 
+import io.github.pixee.security.SystemCommand;
 import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
@@ -1470,7 +1471,7 @@ public final class MainWindow implements Runnable, RipStatusHandler {
                     LOGGER.info("RUnning command " + commandToRun);
                     // code from:
                     // https://stackoverflow.com/questions/5711084/java-runtime-getruntime-getting-output-from-executing-a-command-line-program
-                    Process proc = Runtime.getRuntime().exec(commandToRun);
+                    Process proc = SystemCommand.runCommand(Runtime.getRuntime(), commandToRun);
                     BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 
                     BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
