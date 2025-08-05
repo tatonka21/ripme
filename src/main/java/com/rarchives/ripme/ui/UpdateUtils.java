@@ -1,5 +1,6 @@
 package com.rarchives.ripme.ui;
 
+import io.github.pixee.security.SystemCommand;
 import java.awt.Dimension;
 import java.io.*;
 import java.net.URISyntaxException;
@@ -284,7 +285,7 @@ public class UpdateUtils {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     logger.info("Executing: " + batchFile);
-                    Runtime.getRuntime().exec(batchExec);
+                    SystemCommand.runCommand(Runtime.getRuntime(), batchExec);
                 } catch (IOException e) {
                     // TODO implement proper stack trace handling this is really just intented as a
                     // placeholder until you implement proper error handling
@@ -304,7 +305,7 @@ public class UpdateUtils {
             new File(updateFileName).renameTo(new File(mainFilePath));
             if (shouldLaunch) {
                 // No need to do it during shutdown: the file used will indeed be the new one
-                Runtime.getRuntime().exec("java -jar " + mainFileName);
+                SystemCommand.runCommand(Runtime.getRuntime(), "java -jar " + mainFileName);
             }
             logger.info("Update installed, newer version should be executed upon relaunch");
             System.exit(0);
